@@ -3,14 +3,14 @@
 """Console script for listentoeverything."""
 import sys
 import click
-
+import listentoeverything
+from os import path
 
 @click.command()
-def main(args=None):
+@click.option("--config_file", default=path.join(path.expanduser("~"), ".listen.yml"), help="Path of config file")
+def main(config_file):
     """Console script for listentoeverything."""
-    click.echo("Replace this message by putting your code into "
-               "listentoeverything.cli.main")
-    click.echo("See click documentation at http://click.pocoo.org/")
+    listentoeverything.main(config_file)
     return 0
 
 

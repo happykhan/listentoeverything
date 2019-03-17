@@ -74,18 +74,18 @@ specify in the config file (default location is ~/.listen).
 Spotify login
 -------------
 Spotify requires users to authorise 3rd party programs through the website.
-Normally the first time you run this script it will open browser and redirect you
+Normally the first time you run this script it will open a web browser and redirect you
 to spotify, where a user would need to click authorise. Then it will come back to
-redirect URL. As this isn't a website, it just comes back to localhost.
+a redirect URL. As this isn't a website, I just send it back to localhost.
 
 .. image:: docs/spotify_login.png
 
 The script will want to know what the URL was, including the code. So copy this
-and paste in the prompt.
+from the address bar and paste in the prompt.
 
 .. image:: docs/spotify_token.png
 
-The token will be cached for a while so you do not need to do this everytime.
+The token will be cached for a while so you do not need to do this every time.
 
 
 License
