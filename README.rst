@@ -2,7 +2,7 @@
 listentoeverything
 ==================
 
-.. image:: https://img.shields.io/travis/happykhan/listentoeverything.svg
+.. image:: https://travis-ci.org/happykhan/listentoeverything.svg?branch=master
         :target: https://travis-ci.org/happykhan/listentoeverything
 .. image:: https://img.shields.io/pypi/v/listentoeverything.svg
         :target: https://pypi.python.org/pypi/listentoeverything
