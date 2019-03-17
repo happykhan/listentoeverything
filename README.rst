@@ -5,13 +5,8 @@ listentoeverything
 
 .. image:: https://img.shields.io/pypi/v/listentoeverything.svg
         :target: https://pypi.python.org/pypi/listentoeverything
-
 .. image:: https://img.shields.io/travis/happykhan/listentoeverything.svg
         :target: https://travis-ci.org/happykhan/listentoeverything
-
-.. image:: https://readthedocs.org/projects/listentoeverything/badge/?version=latest
-        :target: https://listentoeverything.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
 .. image:: https://img.shields.io/pypi/v/listentoeverything.svg
         :target: https://pypi.python.org/pypi/listentoeverything
         :alt: Pypi
