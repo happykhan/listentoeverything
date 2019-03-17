@@ -6,6 +6,7 @@ import click
 import listentoeverything
 from os import path
 
+
 @click.command()
 @click.option("--config_file", default=path.join(path.expanduser("~"), ".listen.yml"), help="Path of config file")
 def main(config_file):

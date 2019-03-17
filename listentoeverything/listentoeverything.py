@@ -109,4 +109,3 @@ def main(cfg_path):
     spotify = get_spotify_session(cfg)
     for subreddit in ['metal', 'Music', 'listentothis', 'deephouse']:
         update_playlist(cfg, spotify, reddit, subreddit)
-
