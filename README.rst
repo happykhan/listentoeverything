@@ -10,13 +10,6 @@ listentoeverything
 .. image:: https://img.shields.io/pypi/v/listentoeverything.svg
         :target: https://pypi.python.org/pypi/listentoeverything
         :alt: Pypi
-.. image:: https://img.shields.io/docker/build/happykhan/listentoeverything.svg
-        :target: https://cloud.docker.com/repository/docker/happykhan/listentoeverything
-        :alt: Dockerhub
-.. image:: https://img.shields.io/coveralls/github/happykhan/listentoeverything.svg   
-        :alt: Coveralls github
-.. image:: https://img.shields.io/scrutinizer/coverage/g/happykhan/listentoeverything.svg   
-        :alt: Scrutinizer coverage
 .. image:: https://pyup.io/repos/github/happykhan/listentoeverything/shield.svg
         :target: https://pyup.io/repos/github/happykhan/listentoeverything/
         :alt: Updates
