@@ -17,13 +17,14 @@ Scrapes good music off Reddit, makes a spotify playlist
 
 Installation and Usage
 ----------------------
-
+via pip:
+~~~~~~~~~~
 .. code-block:: bash
 
     pip install listentoeverything
 
-From source:
-~~~~~~~~~~~~
+via source:
+~~~~~~~~~~~
 .. code-block:: bash
 
     git clone git@github.com:happykhan/listentoeverything.git
@@ -31,6 +32,7 @@ From source:
     pip install -r requirements.txt
 
 Then run:
+~~~~~~~~~
 
 .. code-block:: bash
 
