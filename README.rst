@@ -2,9 +2,6 @@
 listentoeverything
 ==================
 
-
-.. image:: https://img.shields.io/pypi/v/listentoeverything.svg
-        :target: https://pypi.python.org/pypi/listentoeverything
 .. image:: https://img.shields.io/travis/happykhan/listentoeverything.svg
         :target: https://travis-ci.org/happykhan/listentoeverything
 .. image:: https://img.shields.io/pypi/v/listentoeverything.svg
