@@ -20,6 +20,12 @@ Installation and Usage
 
 .. code-block:: bash
 
+    pip install listentoeverything
+
+From source:
+~~~~~~~~~~~~
+.. code-block:: bash
+
     git clone git@github.com:happykhan/listentoeverything.git
     cd listentoeverything
     pip install -r requirements.txt
