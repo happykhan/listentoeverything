@@ -34,15 +34,69 @@ listentoeverything
 
 Scrapes good music off Reddit, makes a spotify playlist
 
+Installation and Usage
+----------------------
 
-* Free software: GNU General Public License v3
-* Documentation: https://listentoeverything.readthedocs.io.
+.. code-block:: bash
+
+    git clone git@github.com:happykhan/listentoeverything.git
+    cd listentoeverything
+    pip install -r requirements.txt
+
+Then run:
+
+.. code-block:: bash
+
+    python listentoeverything/cli.py --config_file <config_file.yml>
 
 
-Features
---------
+Configuration
+-------------
+You will need to sign up to the Spotify API and reddit API.
+* https://developer.spotify.com/documentation/web-api/
+* https://www.reddit.com/dev/api/
 
-* TODO
+They will issue you with various authorisation keys which you need to
+specify in the config file (default location is ~/.listen).
+
+.. code-block:: yaml
+
+    reddit:
+       client_id: <Your key>
+       client_secret: <Your key>
+       user_agent: listenonspotify
+       username: <Your reddit username>
+       password: <Your pass>
+    spotify:
+       username: <Your spotify username>
+       scope: playlist-modify-public
+       client_id: <Your key>
+       client_secret: <Your key>
+       redirect_uri: http://localhost/
+
+
+
+Spotify login
+-------------
+Spotify requires users to authorise 3rd party programs through the website.
+Normally the first time you run this script it will open browser and redirect you
+to spotify, where a user would need to click authorise. Then it will come back to
+redirect URL. As this isn't a website, it just comes back to localhost.
+
+.. image:: docs/spotify_login.png
+
+The script will want to know what the URL was, including the code. So copy this
+and paste in the prompt.
+
+.. image:: docs/spotify_token.png
+
+The token will be cached for a while so you do not need to do this everytime.
+
+
+License
+-------
+listentoeverything is free software under the GNU General Public License v3.
+
 
 Credits
 -------
