@@ -15,10 +15,11 @@ listentoeverything
         :alt: Dockerhub
 .. image:: https://img.shields.io/coveralls/github/happykhan/listentoeverything.svg   
         :alt: Coveralls github
-.. image:: https://img.shields.io/scrutinizer/coverage/g/happykhan/listentoeverything.svg   :alt: Scrutinizer coverage
+.. image:: https://img.shields.io/scrutinizer/coverage/g/happykhan/listentoeverything.svg   
+        :alt: Scrutinizer coverage
 .. image:: https://pyup.io/repos/github/happykhan/listentoeverything/shield.svg
-     :target: https://pyup.io/repos/github/happykhan/listentoeverything/
-     :alt: Updates
+        :target: https://pyup.io/repos/github/happykhan/listentoeverything/
+        :alt: Updates
 
 
 
