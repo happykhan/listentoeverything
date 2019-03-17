@@ -1,0 +1,12 @@
+reddit:
+   client_id: <Your key>
+   client_secret: <Your key>
+   user_agent: listenonspotify
+   username: <Your reddit username>
+   password: <Your pass>
+spotify:
+   username: <Your spotify username>
+   scope: playlist-modify-public
+   client_id: <Your key>
+   client_secret: <Your key>
+   redirect_uri: http://localhost/
