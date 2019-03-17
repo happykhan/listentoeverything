@@ -44,6 +44,7 @@ Then run:
 Configuration
 -------------
 You will need to sign up to the Spotify API and reddit API.
+
 * https://developer.spotify.com/documentation/web-api/
 * https://www.reddit.com/dev/api/
 
