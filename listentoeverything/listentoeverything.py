@@ -79,6 +79,7 @@ def update_playlist(cfg, spotify, reddit, subreddit_name):
         r"^([\w\s\(\)\'\&\,\!\.]+?)\s*-\s*([\w\s\'\&\,\!\/\’\.\(\)]+?)(\s*\[.+\]|$)"
     )  # Ridiculous regex looking for artist - title
     not_found = []
+    not_parsed = []
     # Search reddit for artist - titles, add to spotify playlist list if its not in the playlist already
     for x in reddit.subreddit(subreddit_name).top("week"):
         reg = re.search(regex, x.title.replace("--", "-"))
@@ -94,13 +95,18 @@ def update_playlist(cfg, spotify, reddit, subreddit_name):
                     new_tracks.append(track_uri)
             else:
                 not_found.append(track_name)
+        else:
+            not_parsed.append(x.title)
     new_tracks = list(set(new_tracks))
     # Add new tracks, if any, to the playlist.
     if new_tracks:
         spotify.user_playlist_add_tracks(user, playlist, new_tracks, position=0)
     if not_found:
-        log.warning("Could not find")
+        log.warning("Could not find %s" % subreddit_name)
         log.warning("\n".join(not_found))
+    if not_found:
+        log.warning("Could not parse %s" % subreddit_name)
+        log.warning("\n".join(not_parsed))
 
 
 def main(cfg_path):
