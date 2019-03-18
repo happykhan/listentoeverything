@@ -2,7 +2,7 @@
 listentoeverything
 ==================
 
-.. image:: https://img.shields.io/travis/happykhan/listentoeverything.svg
+.. image:: https://travis-ci.org/happykhan/listentoeverything.svg?branch=master
         :target: https://travis-ci.org/happykhan/listentoeverything
 .. image:: https://img.shields.io/pypi/v/listentoeverything.svg
         :target: https://pypi.python.org/pypi/listentoeverything
@@ -17,7 +17,14 @@ Scrapes good music off Reddit, makes a spotify playlist
 
 Installation and Usage
 ----------------------
+via pip:
+~~~~~~~~~~
+.. code-block:: bash
 
+    pip install listentoeverything
+
+via source:
+~~~~~~~~~~~
 .. code-block:: bash
 
     git clone git@github.com:happykhan/listentoeverything.git
@@ -25,6 +32,7 @@ Installation and Usage
     pip install -r requirements.txt
 
 Then run:
+~~~~~~~~~
 
 .. code-block:: bash
 
