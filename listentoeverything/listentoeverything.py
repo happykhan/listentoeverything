@@ -48,65 +48,69 @@ def get_spotify_session(cfg):
 def get_current_playlist_name(subreddit):
     today = datetime.date.today()
     monday_date = today - datetime.timedelta(days=today.weekday())
-    return 'r-listento%s %s' % (subreddit.replace('listento', ''), str(monday_date))
+    name_list = 'r-listento%s' % subreddit.replace('listento', '')
+    date_list = 'r-listento%s %s' % (subreddit.replace('listento', ''), str(monday_date))
+    return [name_list, date_list]
 
 
 def update_playlist(cfg, spotify, reddit, subreddit_name):
     user = cfg["spotify"]["username"]
-    playlist_name = get_current_playlist_name(subreddit_name)
-    # Find existing playlist or create a new one
-    playlist = [
-        x.get("id")
-        for x in spotify.current_user_playlists().get("items")
-        if x.get("name") == playlist_name
-    ]
-    if playlist:
-        playlist = playlist[0]
-    else:
-        playlist = spotify.user_playlist_create(user, playlist_name)
-        playlist = playlist.get('id')
-
-    # Find existing tracks, save the URI
-    existing_tracks = spotify.user_playlist_tracks(user, playlist)
-    if existing_tracks:
-        existing_tracks = [
-            x.get("track").get("uri") for x in existing_tracks.get("items")
-        ]
-    else:
-        existing_tracks = []
-    new_tracks = []
-    regex = (
-        r"^([\w\s\(\)\'\&\,\!\.]+?)\s*-\s*([\w\s\'\&\,\!\/\’\.\(\)]+?)(\s*\[.+\]|$)"
-    )  # Ridiculous regex looking for artist - title
+    playlist_names = get_current_playlist_name(subreddit_name)
     not_found = []
     not_parsed = []
-    # Search reddit for artist - titles, add to spotify playlist list if its not in the playlist already
-    for x in reddit.subreddit(subreddit_name).top("week"):
-        reg = re.search(regex, x.title.replace("--", "-"))
-        if reg:
-            track_name = "%s - %s" % (reg.group(1), reg.group(2))
-            log.debug("Looking for %s as %s" % (x.title, track_name))
-            track = spotify.search(track_name, type="track", limit=1)
-            found_track = track.get("tracks").get("items")
-            if found_track:
-                track_uri = track.get("tracks").get("items")[0].get("uri")
-                if track_uri not in existing_tracks:
-                    log.info("Adding %s" % track_name)
-                    new_tracks.append(track_uri)
-            else:
-                not_found.append(track_name)
+    for playlist_name in playlist_names:
+        # Find existing playlist or create a new one
+        playlist = [
+            x.get("id")
+            for x in spotify.current_user_playlists().get("items")
+            if x.get("name") == playlist_name
+        ]
+        if playlist:
+            playlist = playlist[0]
         else:
-            not_parsed.append(x.title)
-    new_tracks = list(set(new_tracks))
-    # Add new tracks, if any, to the playlist.
-    if new_tracks:
-        spotify.user_playlist_add_tracks(user, playlist, new_tracks, position=0)
+            playlist = spotify.user_playlist_create(user, playlist_name)
+            playlist = playlist.get('id')
+
+        # Find existing tracks, save the URI
+        existing_tracks = spotify.user_playlist_tracks(user, playlist)
+        if existing_tracks:
+            existing_tracks = [
+                x.get("track").get("uri") for x in existing_tracks.get("items")
+            ]
+        else:
+            existing_tracks = []
+        new_tracks = []
+        regex = (
+            r"^([\w\s\(\)\'\&\,\!\.]+?)\s*-\s*([\w\s\'\&\,\!\/\’\.\(\)]+?)(\s*\[.+\]|$)"
+        )  # Ridiculous regex looking for artist - title
+
+        # Search reddit for artist - titles, add to spotify playlist list if its not in the playlist already
+        for x in reddit.subreddit(subreddit_name).top("week"):
+            reg = re.search(regex, x.title.replace("--", "-"))
+            if reg:
+                track_name = "%s - %s" % (reg.group(1), reg.group(2))
+                log.debug("Looking for %s as %s" % (x.title, track_name))
+                track = spotify.search(track_name, type="track", limit=1)
+                found_track = track.get("tracks").get("items")
+                if found_track:
+                    track_uri = track.get("tracks").get("items")[0].get("uri")
+                    if track_uri not in existing_tracks:
+                        log.info("Adding %s" % track_name)
+                        new_tracks.append(track_uri)
+                else:
+                    not_found.append(track_name)
+            else:
+                not_parsed.append(x.title)
+        new_tracks = list(set(new_tracks))
+        # Add new tracks, if any, to the playlist.
+        if new_tracks:
+            spotify.user_playlist_add_tracks(user, playlist, new_tracks, position=0)
     if not_found:
         log.warning("Could not find %s" % subreddit_name)
-        log.warning("\n".join(not_found))
-    if not_found:
+        log.warning("\n".join(list(set(not_found))))
+    if not_parsed:
         log.warning("Could not parse %s" % subreddit_name)
-        log.warning("\n".join(not_parsed))
+        log.warning("\n".join(list(set(not_parsed))))
 
 
 def main(cfg_path):
