@@ -11,7 +11,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=6.0', ]
+with open('requirements.txt') as fp:
+    install_requires = fp.read()
 
 setup_requirements = [ ]
 
@@ -34,7 +35,7 @@ setup(
     entry_points={
         'console_scripts': ['listentoeverything=listentoeverything.cli:main'],
     },
-    install_requires=requirements,
+    install_requires=install_requires,
     license="GNU General Public License v3",
     long_description=readme + '\n\n' + history,
     long_description_content_type='text/x-rst',
@@ -46,6 +47,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/happykhan/listentoeverything',
-    version='0.1.1',
+    version='0.3.1',
     zip_safe=False,
 )
