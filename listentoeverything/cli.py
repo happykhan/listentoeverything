@@ -3,7 +3,8 @@
 """Console script for listentoeverything."""
 import sys
 import click
-import listentoeverything
+sys.path.append('..')
+from listentoeverything import listen
 from os import path
 
 
@@ -11,7 +12,7 @@ from os import path
 @click.option("--config_file", default=path.join(path.expanduser("~"), ".listen.yml"), help="Path of config file")
 def main(config_file):
     """Console script for listentoeverything."""
-    listentoeverything.main(config_file)
+    listen.main(config_file)
     return 0
 
 

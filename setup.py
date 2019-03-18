@@ -32,9 +32,7 @@ setup(
     ],
     description="Scrapes good music off Reddit, makes a spotify playlist",
     entry_points={
-        'console_scripts': [
-            'listentoeverything=listentoeverything.cli:main',
-        ],
+        'console_scripts': ['listentoeverything=listentoeverything.cli:main'],
     },
     install_requires=requirements,
     license="GNU General Public License v3",
@@ -48,6 +46,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/happykhan/listentoeverything',
-    version='0.1.0',
+    version='0.1.1',
     zip_safe=False,
 )
