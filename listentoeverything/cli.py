@@ -3,9 +3,9 @@
 """Console script for listentoeverything."""
 import sys
 import click
-sys.path.append('..')
 from listentoeverything import listen
 from os import path
+sys.path.append('..')
 
 
 @click.command()
