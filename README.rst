@@ -12,8 +12,24 @@ listentoeverything
         :alt: Updates
 
 
+I’m always looking for new music. I found an applet on `IFTTT`_, which
+didn’t work. It couldn’t handle posts other than “Artist - Title”. So I
+wrote my own and put it up on `Github`_. Here are some specifics:
 
-Scrapes good music off Reddit, makes a spotify playlist. See the results at https://happykhan.com/playlists/
+-  `Reddit`_ is social media site where users post material, which is
+   voted for or against by others. The higher the vote, the higher the
+   prominence of the material
+-  There are many specific channels (subreddits) for different Music
+   genres; We can use these lists to make curated playlists.
+-  Playlist are based on either the ‘top’ posts or ‘hot’ posts lists
+   e.g. \ `/r/music top of the week`_
+-  I use `Spotipy`_ and `PRAW`_ for talking to Spotify and Reddit.
+-  The program cleans the list up with custom parser.
+-  Each playlist are limited to 100 songs. As new songs are added, the
+   oldest ones are removed.
+-  I update the playlists every day.
+
+See the results at https://happykhan.com/playlists/
 
 Installation and Usage
 ----------------------
@@ -95,3 +111,9 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. _IFTTT: https://ifttt.com/applets/X9h3Mnmd-automatically-add-the-top-posts-from-the-r-listentothis-subreddit-to-a-spotify-playlist
+.. _Github: https://github.com/happykhan/listentoeverything/
+.. _Reddit: http://reddit.com
+.. _/r/music top of the week: https://www.reddit.com/r/music/top/?t=week
+.. _Spotipy: https://spotipy.readthedocs.io/en/latest/
+.. _PRAW: https://praw.readthedocs.io/en/latest/
