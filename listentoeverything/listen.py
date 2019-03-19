@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """Main module."""
-import praw
 import logging
 import spotipy
 import yaml
 from spotipy.util import prompt_for_user_token
 from os import path
-import re
-import datetime
+from requests.exceptions import ConnectionError
 
-logging.basicConfig()
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger()
 
 
@@ -18,19 +16,6 @@ def load_config(config_file=path.join(path.expanduser("~"), ".listen.yml")):
     with open(config_file, "r") as ymlfile:
         cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
         return cfg
-    log.warning('No config found')
-    return None
-
-
-def get_reddit_session(cfg):
-    reddit = praw.Reddit(
-        client_id=cfg["reddit"]["client_id"],
-        client_secret=cfg["reddit"]["client_secret"],
-        user_agent=cfg["reddit"]["user_agent"],
-        username=cfg["reddit"]["username"],
-        password=cfg["reddit"]["password"],
-    )
-    return reddit
 
 
 def get_spotify_session(cfg):
@@ -45,77 +30,98 @@ def get_spotify_session(cfg):
     return spotify
 
 
-def get_current_playlist_name(subreddit):
-    today = datetime.date.today()
-    monday_date = today - datetime.timedelta(days=today.weekday())
-    name_list = 'r-listento%s' % subreddit.replace('listento', '')
-    date_list = 'r-listento%s %s' % (subreddit.replace('listento', ''), str(monday_date))
-    return [name_list, date_list]
+def get_playlist_id(spotify, user, playlist_name):
+    # Find existing playlist or create a new one
+    playlist = [
+        x.get("id")
+        for x in spotify.current_user_playlists().get("items")
+        if x.get("name") == playlist_name
+    ]
+    if playlist:
+        playlist = playlist[0]
+    else:
+        playlist = spotify.user_playlist_create(user, playlist_name)
+        playlist = playlist.get('id')
+    return playlist
 
 
-def update_playlist(cfg, spotify, reddit, subreddit_name):
-    user = cfg["spotify"]["username"]
-    playlist_names = get_current_playlist_name(subreddit_name)
-    not_found = []
-    not_parsed = []
-    for playlist_name in playlist_names:
-        # Find existing playlist or create a new one
-        playlist = [
-            x.get("id")
-            for x in spotify.current_user_playlists().get("items")
-            if x.get("name") == playlist_name
+def get_existing_tracks(spotify, user, playlist):
+    # Find existing tracks, save the URI
+    existing_tracks = spotify.user_playlist_tracks(user, playlist)
+    if existing_tracks:
+        existing_tracks = [
+            x.get("track").get("uri") for x in existing_tracks.get("items")
         ]
-        if playlist:
-            playlist = playlist[0]
-        else:
-            playlist = spotify.user_playlist_create(user, playlist_name)
-            playlist = playlist.get('id')
+    else:
+        existing_tracks = []
+    return existing_tracks
 
-        # Find existing tracks, save the URI
-        existing_tracks = spotify.user_playlist_tracks(user, playlist)
-        if existing_tracks:
-            existing_tracks = [
-                x.get("track").get("uri") for x in existing_tracks.get("items")
-            ]
-        else:
-            existing_tracks = []
+
+def my_import(name):
+    m = __import__(name)
+    for n in name.split(".")[1:]:
+        m = getattr(m, n)
+    return m
+
+
+def update_playlist(cfg, spotify, subreddit_name):
+    log.info('Building playlist for %s' %subreddit_name)
+    try:
+        parse = getattr(my_import('parsers.%s' % subreddit_name), subreddit_name.title())(subreddit_name, cfg)
+    except ModuleNotFoundError:
+        log.info('Parser not found, using generic for %s' % subreddit_name)
+        parse = getattr(my_import('parsers.generic'), 'Generic')(subreddit_name, cfg)
+    playlists = parse.get_playlist()
+    with open('../tests/%s-sample.txt' % subreddit_name, 'w') as test_data:
+        test_data.write('\n'.join(parse.get_test_data()))
+    user = cfg["spotify"]["username"]
+    not_found = []
+    sum = []
+    for playlist_name, track_names in playlists.items():
+        playlist_id = get_playlist_id(spotify, user, playlist_name)
+        existing_tracks = get_existing_tracks(spotify, user, playlist_id)
         new_tracks = []
-        regex = (
-            r"^([\w\s\(\)\'\&\,\!\.]+?)\s*-\s*([\w\s\'\&\,\!\/\’\.\(\)]+?)(\s*\[.+\]|$)"
-        )  # Ridiculous regex looking for artist - title
-
-        # Search reddit for artist - titles, add to spotify playlist list if its not in the playlist already
-        for x in reddit.subreddit(subreddit_name).top("week"):
-            reg = re.search(regex, x.title.replace("--", "-"))
-            if reg:
-                track_name = "%s - %s" % (reg.group(1), reg.group(2))
-                log.debug("Looking for %s as %s" % (x.title, track_name))
+        #  add to spotify playlist list if its not in the playlist already
+        for track_name in track_names:
+            try:
                 track = spotify.search(track_name, type="track", limit=1)
                 found_track = track.get("tracks").get("items")
                 if found_track:
                     track_uri = track.get("tracks").get("items")[0].get("uri")
                     if track_uri not in existing_tracks:
-                        log.info("Adding %s" % track_name)
+                        log.info("Adding %s to %s" % (track_name, playlist_name))
                         new_tracks.append(track_uri)
                 else:
                     not_found.append(track_name)
-            else:
-                not_parsed.append(x.title)
+            except ConnectionError:
+                log.warning("ConnectionError")
+
         new_tracks = list(set(new_tracks))
         # Add new tracks, if any, to the playlist.
         if new_tracks:
-            spotify.user_playlist_add_tracks(user, playlist, new_tracks, position=0)
+            spotify.user_playlist_add_tracks(user, playlist_id, new_tracks[:99], position=0)
+        current_tracks = new_tracks + existing_tracks
+        if len(current_tracks) > 100:
+            spotify.user_playlist_remove_all_occurrences_of_tracks(user, playlist_id, current_tracks[100:])
+        sum.append([playlist_name, playlist_id])
     if not_found:
-        log.warning("Could not find %s" % subreddit_name)
+        log.warning("\nCould not find following for %s:" % subreddit_name)
         log.warning("\n".join(list(set(not_found))))
-    if not_parsed:
-        log.warning("Could not parse %s" % subreddit_name)
-        log.warning("\n".join(list(set(not_parsed))))
+    return sum
 
 
 def main(cfg_path):
     cfg = load_config(cfg_path)
-    reddit = get_reddit_session(cfg)
     spotify = get_spotify_session(cfg)
-    for subreddit in ['metal', 'Music', 'listentothis', 'deephouse']:
-        update_playlist(cfg, spotify, reddit, subreddit)
+    with open(cfg.get('summary_path'), 'w') as sum_file:
+        sum_file.write("| Playlist name | URL | Description |\n")
+        sum_file.write("| --- | --- | --- |\n")
+        for subreddit in cfg.get('subreddits'):
+            sum = update_playlist(cfg, spotify, subreddit)
+            for s in sum:
+                description = 'Automated playlist'
+                playlist_url = 'https://open.spotify.com/playlist/%s' % s[1]
+                sum_file.write("|{}|[Spotify playlist]({})|{}|\n".format(s[0], playlist_url, description))
+                sum_file.flush()
+
+

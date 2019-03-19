@@ -10,3 +10,7 @@ spotify:
    client_id: <Your key>
    client_secret: <Your key>
    redirect_uri: http://localhost/
+subreddits:
+    - music
+    - metal
+    - listentothis

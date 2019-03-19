@@ -3,7 +3,10 @@
 """Console script for listentoeverything."""
 import sys
 import click
-from listentoeverything import listen
+try:
+    from listentoeverything import listen
+except:
+    import listen
 from os import path
 sys.path.append('..')
 

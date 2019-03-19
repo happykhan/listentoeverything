@@ -14,9 +14,8 @@ with open('HISTORY.rst') as history_file:
 with open('requirements.txt') as fp:
     install_requires = fp.read()
 
-setup_requirements = [ ]
-
-test_requirements = [ ]
+with open('requirements_dev.txt') as fp:
+    setup_requires = fp.read()
 
 setup(
     author="Nabil-Fareed Alikhan",
@@ -43,9 +42,9 @@ setup(
     keywords='listentoeverything',
     name='listentoeverything',
     packages=find_packages(include=['listentoeverything']),
-    setup_requires=setup_requirements,
+    setup_requires=setup_requires,
     test_suite='tests',
-    tests_require=test_requirements,
+    tests_require=setup_requires,
     url='https://github.com/happykhan/listentoeverything',
     version='0.3.3',
     zip_safe=False,
