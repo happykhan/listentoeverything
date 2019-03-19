@@ -13,7 +13,7 @@ listentoeverything
 
 
 
-Scrapes good music off Reddit, makes a spotify playlist
+Scrapes good music off Reddit, makes a spotify playlist. See the results at https://happykhan.com/playlists/
 
 Installation and Usage
 ----------------------
