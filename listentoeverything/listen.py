@@ -13,9 +13,14 @@ log = logging.getLogger()
 
 
 def load_config(config_file=path.join(path.expanduser("~"), ".listen.yml")):
-    with open(config_file, "r") as ymlfile:
-        cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
-        return cfg
+    if path.exists('.listen.yml'):
+        with open('.listen.yml', "r") as ymlfile:
+            cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
+            return cfg        
+    else:
+        with open(config_file, "r") as ymlfile:
+            cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
+            return cfg
 
 
 def get_spotify_session(cfg):
@@ -72,8 +77,8 @@ def update_playlist(cfg, spotify, subreddit_name):
         log.info('Parser not found, using generic for %s' % subreddit_name)
         parse = getattr(my_import('parsers.generic'), 'Generic')(subreddit_name, cfg)
     playlists = parse.get_playlist()
-    with open('../tests/%s-sample.txt' % subreddit_name, 'w') as test_data:
-        test_data.write('\n'.join(parse.get_test_data()))
+    #with open('tests/%s-sample.txt' % subreddit_name, 'w') as test_data:
+    #    test_data.write('\n'.join(parse.get_test_data()))
     user = cfg["spotify"]["username"]
     not_found = []
     sum = []

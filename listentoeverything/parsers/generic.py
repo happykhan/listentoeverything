@@ -37,10 +37,10 @@ class Generic:
     def get_playlist(self):
         playlists = {}
         if self.subscribers > 20000:
-            log.info('Subscribers over %d, creating hot list' % self.subscribers)
+            log.info('Subscribers over %d, creating weekly list' % self.subscribers)
             playlist_name = 'r/%s - Hot' % self.subreddit_name
             playlists[playlist_name] = []
-            for post in self.reddit.subreddit(self.subreddit_name).hot(limit=100):
+            for post in self.reddit.subreddit(self.subreddit_name).hot(limit=200):
                 track_title = self.get_track(post.title)
                 if track_title:
                     playlists[playlist_name].append(track_title)
@@ -55,4 +55,4 @@ class Generic:
         return playlists
 
     def get_test_data(self, get_limit=300):
-        return [x.title for x in self.reddit.subreddit(self.subreddit_name).hot(limit=get_limit)]
+        return [x.title.encode("utf8","ignore") for x in self.reddit.subreddit(self.subreddit_name).hot(limit=get_limit)]

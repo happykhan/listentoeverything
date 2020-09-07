@@ -12,3 +12,4 @@ class Music(Generic):
             return '%s %s' % (track.group(1), track.group(2))
         log.warning(unformatted_string)
         return None
+
