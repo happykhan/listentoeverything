@@ -1,4 +1,4 @@
 praw==6.1.1
 PyYAML==5.1
-spotipy==2.4.4
+spotipy==2.22.1
 Click>=6.0
